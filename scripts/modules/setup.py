@@ -10,7 +10,7 @@ setup(
     description="Calculation of several statistics needed for the evaluation of survey data",
     long_description=pypandoc.convert('README.md', 'rst'),
     url="",
-    keywords=["fleiss kappa, gwet, values, p, p(i), pe, pi, pj, pj(i), sum, sum over all n"],
+    keywords=["fleiss kappa, gwet, values, p, p(i), pe, pe(i), pi, pj, pj(i), sum, sum over all n"],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
