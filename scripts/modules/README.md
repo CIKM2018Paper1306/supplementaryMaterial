@@ -75,15 +75,15 @@ dataMatrix = [[2,2,0,0,0],[1,0,1,1,1],[0,1,0,1,2]]
 ```
 
 
-## Installation
+### Installation
 
 ```shell
-#Go to the 'modules' folder with the 'setup.py' script/file and type:
+#Go to the 'modules' directory with the 'setup.py' script and type:
 
 python setup.py install
 ```
 
 
-## Remarks
+#### Remarks
 
 This module requires the [NumPy](http://www.numpy.org/) and [Pypandoc](https://pypi.org/project/pypandoc/) packages to function properly.

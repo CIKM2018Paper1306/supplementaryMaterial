@@ -614,7 +614,7 @@ def buildLSGFile():
             if(loop == 0):
                 mandatory = "N"
                 type = "F"
-                #if the title length is longer than 18, then the title is trimmed to the max length of 18 
+                #if the title length is longer than 18, then the title is trimmed to the maximum length of 18 
                 if(len(columnDic["title"]) > maxlen):
                     columnDic["title"] = columnDic["title"][:18]
                 title = columnDic["title"]
