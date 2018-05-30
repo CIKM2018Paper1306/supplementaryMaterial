@@ -6,9 +6,9 @@ Python scripts for creating and evaluating [LimeSurvey surveys](https://www.lime
 
 ## Scripts
 
-# lsg_creator.py:
+# create_survey.py:
 
-lsg_creator.py is a simple Command Line Interface (CLI) tool to read and extract data from a semicolon-separated CSV file and to
+create_survey.py is a simple Command Line Interface (CLI) tool to read and extract data from a semicolon-separated CSV file and to
 write it into the [LimeSurvey-XML-format]. The script has two options as input, '-f' and '-d'. The '-f' option takes the path
 to the CSV file as input. A folder named 'lsg_files' - in which all LimeSurvey-XML files are saved - is automatically created in
 the same directory as the CSV file during the process. The '-d' option deletes this 'lsg_files' folder if it already exist. If a
@@ -18,9 +18,9 @@ from this directory or set the '-d' option and abort.
 # Example usage:
 
 ```shell
-#Go to the directoy where the lsg_creator.py script is saved and type:
+#Go to the directoy where the create_survey.py script is saved and type:
 
-python lsg_creator.py -f biodiv_questions.csv -d
+python create_survey.py -f biodiv_questions.csv -d
 ```
 
 The [LimeSurvey-XML] file can have a maximum of 20 questions. If a CSV file has more than 20 questions it will separated in two, three,
@@ -42,9 +42,9 @@ The CSV file should be semicolon-separated and have the following format:
 - 5th and all following columns: Terms to be annotated
 
 
-# lsg_evaluator.py:
+# analyze_results.py:
 
-lsg_evaluator.py is a simple CLI tool to read and extract data from a [LimeSurvey-Result]-CSV file and to write and evaluate its
+analyze_results.py is a simple CLI tool to read and extract data from a [LimeSurvey-Result]-CSV file and to write and evaluate its
 results into a new CSV file, called 'lsg__/survey_names/.csv'. The script has two options as input, '-f' and '-c'. The '-f' option
 can take the paths of multiple [LimeSurvey-Result]-CSV files and combine the results into a single CSV file. However, each of these
 files have to have the same questions and nouns, i.e. have to be identical except for their question order. Most likely won't most
@@ -58,30 +58,14 @@ the data of all following [LimeSurvey-Result]-CSV files is extracted by using th
 # Example usage:
 
 ```shell
-#Go to the directoy where the lsg_evaluator.py script is saved and type:
+#Go to the directoy where the analyze_results.py script is saved and type:
 
-python lsg_evaluator.py -f first-lsg-results.csv second-lsg-results.csv third-lsg-results.csv -c 9
-```
-
-
-# lsg_krippendorff.py:
-
-lsg_krippendorff is a simple CLI tool to read and extract data from a [LimeSurvey-Result]-CSV file and to write its results in a 
-two-dimensional Krippendorff matrix (as a CSV file, called 'lsg__krippendorff__/survey_names/.csv') for further evaluation by the
-[Krippendorff’s alpha agreement measure.](https://pypi.org/project/krippendorff/0.2.2/). The script has two options as input, '-f'
-and '-c'. Both options are identical in their function to the options in the 'lsg_evaluator.py' script.
-
-# Example usage:
-
-```shell
-#Go to the directoy where the lsg_krippendorff.py script is saved and type:
-
-python lsg_krippendorff.py -f first-lsg-results.csv second-lsg-results.csv third-lsg-results.csv -c 5
+python analyze_results.py -f first.csv second.csv third.csv -c 2
 ```
 
 
 
 ### Remarks
 
-The lsg_evaluator.py and lsg_krippendorff.py scripts require the [Fleiss' Kappa](in the 'modules' folder) and the
+The analyze_results.py require the [Fleiss' Kappa](in the 'modules' folder) and the
 [pandas](https://pandas.pydata.org/) packages for data evaluation and easy-data-extraction of CSV files.
