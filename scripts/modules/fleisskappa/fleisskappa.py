@@ -32,24 +32,16 @@ def calculatePE_PEI(ratings, participantNumber, nounNumber, categoryNumber):
     else:
         point_list = ratings
     
+    points = np.array(point_list)
+    
     pe_value = 0
     pe_i_value = 0
-    pj_value_list = list()
-    pj_i_value_list = list()
-    for point in point_list:
-        
-        pj_value = float(point) / (participantNumber * nounNumber)
-        pj_value_list.append(pj_value)
-        
-        pj_i_value = pj_value * (1 - pj_value)
-        pj_i_value_list.append(pj_i_value)
-        
-        pe_value = pe_value + (pj_value * pj_value)
-        pe_i_value = pe_i_value + pj_i_value
-        
-    pe_i_value = pe_i_value * (1 / float(categoryNumber - 1))
-    
-    return (pe_value, pe_i_value, pj_value_list, pj_i_value_list)
+    pj_value_list = points / (participantNumber * nounNumber)
+    pj_i_value_list = pj_value_list * (1 - pj_value_list)
+    pe_value = np.sum(pj_value_list**2)
+    pe_i_value = np.sum(pj_i_value_list) * (1 / float(categoryNumber - 1))
+
+    return (pe_value, pe_i_value, (pj_value_list).tolist(), (pj_i_value_list).tolist())
 
 
 
@@ -80,7 +72,6 @@ def calculateSumN(ratings):
             point_list.append(ratings[point])
     else:
         point_list = ratings
-    
     
     points = np.array(point_list)
     sumN = np.sum(points * (points-1))
@@ -122,7 +113,6 @@ def calculateFleissKappa_GWET_Matrix(surveyMatrix):
         
     p = float(global_pi_value) / nounNumber
     
-    
     points = np.sum(numpySurveyMatrix, axis=0)
     pe_pei = calculatePE_PEI(points, participantNumber, nounNumber, categoryNumber)
     
@@ -130,4 +120,3 @@ def calculateFleissKappa_GWET_Matrix(surveyMatrix):
     gwet = float(p - pe_pei[1]) / (1 - pe_pei[1])
     
     return (kappa, gwet)
-        
