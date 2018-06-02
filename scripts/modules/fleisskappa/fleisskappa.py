@@ -111,21 +111,12 @@ def calculateFleissKappa_GWET_Matrix(surveyMatrix):
     numpySurveyMatrix = np.array(surveyMatrix)
     nounNumber = numpySurveyMatrix.shape[0]
     categoryNumber = numpySurveyMatrix.shape[1]
-    participantNumber = 0
-    
-    firstLine = True
+    participantNumber = np.sum(numpySurveyMatrix, axis=1)[0]
+
     global_pi_value = 0
-    
     for row in numpySurveyMatrix:
         
         sum_n = calculateSumN(row)
-        if(firstLine):
-            for col in range(len(row)):
-            
-                participantNumber = participantNumber + row[col]
-        
-        firstLine = False
-        
         pi = calculatePI(participantNumber, sum_n)
         global_pi_value = global_pi_value + pi
         

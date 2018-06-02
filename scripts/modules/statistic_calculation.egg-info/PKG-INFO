@@ -82,27 +82,27 @@ Description: Fleiss’ Kappa, GWET and other statistical calculations
            Fleiss' Kappa: calculateFleissKappa_GWET_Matrix(dataMatrix)[0]
            GWET: calculateFleissKappa_GWET_Matrix(dataMatrix)[1]
         
-           #Example matrix with 5 categories, three nouns and four participants:
+           #Example matrix with five categories, three nouns and four participants:
         
            dataMatrix = [[2,2,0,0,0],[1,0,1,1,1],[0,1,0,1,2]]
         
         Installation
-        ------------
+        ~~~~~~~~~~~~
         
         .. code:: shell
         
-           #Go to the 'modules' folder with the 'setup.py' script/file and type:
+           #Go to the 'modules' directory with the 'setup.py' script and type:
         
            python setup.py install
         
         Remarks
-        -------
+        ^^^^^^^
         
         This module requires the `NumPy <http://www.numpy.org/>`__ and
         `Pypandoc <https://pypi.org/project/pypandoc/>`__ packages to function
         properly.
         
-Keywords: fleiss kappa, gwet, values, p, p(i), pe, pi, pj, pj(i), sum, sum over all n
+Keywords: fleiss kappa, gwet, values, p, p(i), pe, pe(i), pi, pj, pj(i), sum, sum over all n
 Platform: UNKNOWN
 Classifier: Development Status :: 3 - Alpha
 Classifier: Intended Audience :: Science/Research
