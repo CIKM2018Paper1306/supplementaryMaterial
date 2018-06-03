@@ -10,18 +10,19 @@ For further information, in particular the annotation guidelines, please have a 
 
 ## How to reproduce the result?
  
+Go to the scripts folder and install python and the necessary modules as stated. Copy the 'biodiv-questions.csv' file to the scripts folder and run
 
 ```shell
-#Go to the scripts folder and install python and the necessary modules as stated. Copy the biodiv-questions.csv file to the scripts folder and run
 
 python create_survey.py -f biodiv-questions.csv
+
 ```
 That will create a new folder 'lsg_files' that contains files which can be imported into *Limesurvey* (https://www.limesurvey.org/) as question groups. Further information can be found in the scripts folder.
-The exported result files are under *surveys* --> *result*. We established three survey with the same number of questions but different orderings in order to increase the likelihood that every question gets a rating. To retrieve the final result file with the statistics 
-
+The exported result files are under surveys --> result. We established three survey with the same number of questions but different orderings in order to increase the likelihood that every question gets a rating. To retrieve the final result file with the statistics copy the three individual result files into the scripts folder and run
 ```shell
-# Please copy the three individual result files into the scripts folder and run+
+
 python analyze_result.py -f first.csv second.csv third.csv -c 1
+
 ```
 
 The result file lsg____first__second__third.csv will contain the statistics including the overall inter-rater-agreement determined with Fleiss-Kappa and GWET's AC.
@@ -42,7 +43,7 @@ In order to use these scripts for a new domain, you would need to
 10. run the analyze_result.py script to generate the statistics and the inter-rater-agreement
 
 ## How to further use these results?
-As you can see from our *lsg____first__second__third.csv file*, the artifacts have different *P(i)* values, which is the observed agreement over all raters. It is up to you to define a threshold at which agreement you consider a rating as a valid category assignment. Usually, a *P(i)* > 0,6 can be considered as a good agreement.
+As you can see from our 'lsg____first__second__third.csv' file, the artifacts have different *P(i)* values, which is the observed agreement over all raters. It is up to you to define a threshold at which agreement you consider a rating as a valid category assignment. Usually, a *P(i)* > 0,6 can be considered as a good agreement.
 
 ## License
 ToDo
