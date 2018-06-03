@@ -30,19 +30,19 @@ The result file lsg____first__second__third.csv will contain the statistics incl
 
 In order to use these scripts for a new domain, you would need to
 
-1.) collect questions in your domain and store it in a csv file
-2.) inspect the questions concerning suitable categories
-3.) develop annotation guidelines (What to label? What are relevant terms and phrases?) in close collaboration with domain experts
-4.) identify terms and phrases (artifacts) in the questions according to the guidelines and write the artifacts into the row of the related question
-5.) adapt the create_survey.py script to your needs (e.g., change the categories)
-6.) run the create_survey.py script to generate Limesurvey structure files
-7.) setup Limesurvey and import the lsg files into a new survey
-8.) send the survey to domain experts (including a short description of the categories and what to do in this evaluation!) who will assign categories to the given terms and phrases
-9.) export the survey results from Limesurvey into a csv file
-10.) run the analyze_result.py script to generate the statistics and the inter-rater-agreement
+1. collect questions in your domain and store it in a csv file
+2. inspect the questions concerning suitable categories
+3. develop annotation guidelines (What to label? What are relevant terms and phrases?) in close collaboration with domain experts
+4. identify terms and phrases (artifacts) in the questions according to the guidelines and write the artifacts into the row of the related question
+5. adapt the create_survey.py script to your needs (e.g., change the categories)
+6. run the create_survey.py script to generate Limesurvey structure files
+7. setup Limesurvey and import the lsg files into a new survey
+8. send the survey to domain experts (including a short description of the categories and what to do in this evaluation!) who will assign categories to the given terms and phrases
+9. export the survey results from Limesurvey into a csv file
+10. run the analyze_result.py script to generate the statistics and the inter-rater-agreement
 
 ## How to further use these results?
-As you can see from our lsg____first__second__third.csv file, the artifacts have different P(i) values, which is the observed agreement over all raters. It is up to you to define a threshold at which agreement you consider a rating as a valid category assignment. Usually, a P(i) > 0,6 can be considered as a good agreement.
+As you can see from our *lsg____first__second__third.csv file*, the artifacts have different *P(i)* values, which is the observed agreement over all raters. It is up to you to define a threshold at which agreement you consider a rating as a valid category assignment. Usually, a *P(i)* > 0,6 can be considered as a good agreement.
 
 ## License
 ToDo
