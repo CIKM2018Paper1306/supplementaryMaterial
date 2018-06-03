@@ -69,7 +69,7 @@ kp.calculateFleissKappa_GWET_Matrix(dataMatrix)
 Fleiss' Kappa: calculateFleissKappa_GWET_Matrix(dataMatrix)[0]
 GWET: calculateFleissKappa_GWET_Matrix(dataMatrix)[1]
 
-#Example matrix with 5 categories, three nouns and four participants:
+#Example matrix with five categories, three nouns and four participants:
 
 dataMatrix = [[2,2,0,0,0],[1,0,1,1,1],[0,1,0,1,2]]
 ```
