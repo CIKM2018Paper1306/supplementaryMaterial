@@ -22,8 +22,8 @@ The exported result files are under *surveys* --> *result*. We established three
 ```shell
 # Please copy the three individual result files into the scripts folder and run+
 python analyze_result.py -f first.csv second.csv third.csv -c 1
+```
 
-```shell
 The result file lsg____first__second__third.csv will contain the statistics including the overall inter-rater-agreement determined with Fleiss-Kappa and GWET's AC.
 
 ## How to use it for a new domain?
