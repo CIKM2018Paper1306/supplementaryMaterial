@@ -6,7 +6,137 @@ Based on the caluclations by [Joseph L. Fleiss](https://en.wikipedia.org/wiki/Fl
 
 
 
-## Code usage
+
+# Prerequisites
+
+To install this module successfully, you need a [Python3+] distribution and an other third-party tool, called [NumPy].
+How to install these tools, will be explained in the following lines:
+
+## |---------|
+## | Windows |
+## |---------|
+
+### Python
+
+To install [Python3+], go to the [Python website](https://www.python.org/), go to the "Downloads" button and install
+the current [Python] version.
+To check if [Python] was successfully installed, open your Command Prompt (called "shell" from now on) and type:
+
+```shell
+
+python
+```
+
+or
+
+```shell
+
+py
+```
+
+and check the displayed version in the [Python] shell. Type:
+
+```shell
+
+exit()
+```
+
+to exit the [Python] shell.
+
+[Pip] - a package management system used to install [Python] software packages - is already installed in all [Python] versions >= 3.4.
+[Pip] is used in this instruction to install the [NumPy] package.
+
+
+### NumPy
+
+[NumPy] is a [Python] package for efficiently computing array objects and other algebra calculations. To install [NumPy], type:
+
+```shell
+
+python -m pip install numpy
+```
+
+or
+
+```shell
+
+py -m pip install numpy
+```
+
+(whichever uses the correct [Python] version).
+
+
+
+## |------|
+## |Linux |
+## |------|
+
+### Python
+
+To install [Python3+], open your Command Prompt (called "shell" from now on) and type:
+
+```shell
+
+sudo apt-get install python3
+```
+
+To check if [Python] was successfully installed, type:
+
+```shell
+
+python
+```
+
+or
+
+```shell
+
+py
+```
+
+[Pip] - a package management system used to install [Python] software packages - is already installed in all [Python] versions >= 3.4.
+[Pip] is used in this instruction to install the [NumPy] package.
+
+
+### NumPy
+
+[NumPy] is a [Python] package for efficiently computing array objects and other algebra calculations. To install [NumPy], type:
+
+```shell
+
+python -m pip install numpy
+```
+
+or
+
+```shell
+
+py -m pip install numpy
+```
+
+(whichever uses the correct [Python] version).
+
+
+
+
+# Installation
+
+```shell
+#Go to the 'modules' directory with the 'setup.py' script and type:
+
+python setup.py install
+
+#or
+
+py setup.py install
+
+#whichever uses the correct Python version
+```
+
+
+
+
+# Code usage
 
 ```python
 import fleisskappa as kp
@@ -73,17 +203,3 @@ GWET: calculateFleissKappa_GWET_Matrix(dataMatrix)[1]
 
 dataMatrix = [[2,2,0,0,0],[1,0,1,1,1],[0,1,0,1,2]]
 ```
-
-
-### Installation
-
-```shell
-#Go to the 'modules' directory with the 'setup.py' script and type:
-
-python setup.py install
-```
-
-
-#### Remarks
-
-This module requires the [NumPy](http://www.numpy.org/) and [Pypandoc](https://pypi.org/project/pypandoc/) packages to function properly.

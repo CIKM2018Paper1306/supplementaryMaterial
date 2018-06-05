@@ -4,9 +4,160 @@ Python scripts for creating and evaluating [LimeSurvey surveys](https://www.lime
 
 
 
-## Scripts
 
-# create_survey.py:
+# Prerequisites
+
+To start each script in this package successfully, you need a [Python3+] distribution and some other third-party tools.
+How to install these tools, will be explained in the following lines:
+
+## |---------|
+## | Windows |
+## |---------|
+
+### Python
+
+To install [Python3+], go to the [Python website](https://www.python.org/), go to the "Downloads" button and install
+the current [Python] version.
+To check if [Python] was successfully installed, open your Command Prompt (called "shell" from now on) and type:
+
+```shell
+
+python
+```
+
+or
+
+```shell
+
+py
+```
+
+and check the displayed version in the [Python] shell. Type:
+
+```shell
+
+exit()
+```
+
+to exit the [Python] shell.
+
+[Pip] - a package management system used to install [Python] software packages - is already installed in all [Python] versions >= 3.4.
+[Pip] is used in this instruction to install the [Pandas] package.
+
+
+### FleissKappa
+
+To install the [Fleisskappa] module - that is delivered with the main scripts - go to the "modules" folder (shell) and type:
+
+```shell
+
+python setup.py install
+```
+
+or
+
+```shell
+
+py setup.py install
+```
+
+(whichever uses the correct [Python] version). For further information, look at the [README.md] file in the "modules" folder.
+
+
+### Pandas
+
+[Pandas] is a third-party [Python] tool for efficiently reading CSV files column by column. To install the [Pandas] module, simple type:
+
+```shell
+
+python -m pip install pandas
+```
+
+or
+
+```shell
+
+py -m pip install pandas
+```
+
+(again, whichever uses the correct [Python] version).
+
+
+
+## |------|
+## |Linux |
+## |------|
+
+### Python
+
+To install [Python3+], open your Command Prompt (called "shell" from now on) and type:
+
+```shell
+
+sudo apt-get install python3
+```
+
+To check if [Python] was successfully installed, type:
+
+```shell
+
+python
+```
+
+or
+
+```shell
+
+py
+```
+
+[Pip] - a package management system used to install [Python] software packages - is already installed in all [Python] versions >= 3.4.
+[Pip] is used in this instruction to install the [Pandas] package.
+
+
+### FleissKappa
+
+To install the [Fleisskappa] module - that is delivered with the main scripts - go to the "modules" folder (shell) and type:
+
+```shell
+
+python setup.py install
+```
+
+or
+
+```shell
+
+py setup.py install
+```
+
+(whichever uses the correct [Python] version). For further information, look at the [README.md] file in the "modules" folder.
+
+
+### Pandas
+
+[Pandas] is a third-party [Python] tool for efficiently reading CSV files column by column. To install the [Pandas] module, simple type:
+
+```shell
+
+python -m pip install pandas
+```
+
+or
+
+```shell
+
+py -m pip install pandas
+```
+
+(again, whichever uses the correct [Python] version).
+
+
+
+
+# Scripts
+
+## create_survey.py:
 
 create_survey.py is a simple Command Line Interface (CLI) tool to read and extract data from a semicolon-separated CSV file and to
 write it into the [LimeSurvey-XML-format]. The script has two options as input, '-f' and '-d'. The '-f' option takes the path
@@ -15,7 +166,7 @@ the same directory as the CSV file during the process. The '-d' option deletes t
 folder named 'lsg_files' already exists but the '-d' option isn't set, the program will print an error message to remove this folder
 from this directory or set the '-d' option and abort.
 
-# Example usage:
+### Example usage:
 
 ```shell
 #Go to the directoy where the create_survey.py script is saved and type:
@@ -42,7 +193,7 @@ The CSV file should be semicolon-separated and have the following format:
 - 5th and all following columns: Terms to be annotated
 
 
-# analyze_results.py:
+## analyze_results.py:
 
 analyze_results.py is a simple CLI tool to read and extract data from a [LimeSurvey-Result]-CSV file and to write and evaluate its
 results into a new CSV file, called 'lsg__/survey_names/.csv'. The script has two options as input, '-f' and '-c'. The '-f' option
@@ -55,17 +206,10 @@ column the first question (and noun) and answer is. Only the start column of the
 the data of all following [LimeSurvey-Result]-CSV files is extracted by using the question titles and nouns of the first
 [LimeSurvey-Result]-CSV file.
 
-# Example usage:
+### Example usage:
 
 ```shell
 #Go to the directoy where the analyze_results.py script is saved and type:
 
 python analyze_results.py -f first.csv second.csv third.csv -c 2
 ```
-
-
-
-### Remarks
-
-The analyze_results.py require the [Fleiss' Kappa](in the 'modules' folder) and the
-[pandas](https://pandas.pydata.org/) packages for data evaluation and easy-data-extraction of CSV files.
