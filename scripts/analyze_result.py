@@ -162,16 +162,15 @@ def parseResults(surveys):
                         answer = str(answer)
                         #initialize the category String
                         category = ""
-                        #if the answer is 'other', set the category String to 'Other'. Else, set the category String
-                        #to the answer given by the survey
+                        #if the answer is 'other', set the category String to 'Other'
                         if(answer.startswith("<div>other")):
                             category = "Other"
+                        #if the answer is empty (no answer was given/NaN), set the category String to 'None'
+                        elif(answer == "nan"):
+                            category = "None"
+                        #Else, set the category String to the answer given by the survey
                         else:
                             category = answer.split("</span>")[0].split(">")[-1]
-                            
-                        #if the answer is empty (no answer was given/NaN), set the category String to 'None'
-                        if(category == "nan"):
-                            category = "None"
                         
                         #increase the local and overall score of the given category by 1
                         points[category] = points[category] + 1
