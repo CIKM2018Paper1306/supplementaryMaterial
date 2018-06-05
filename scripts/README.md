@@ -213,3 +213,12 @@ the data of all following [LimeSurvey-Result]-CSV files is extracted by using th
 
 python analyze_results.py -f first.csv second.csv third.csv -c 2
 ```
+
+
+
+
+# Remarks
+
+On some systems the analyze_results.py script has to be in "modules" folder to find and use the fleisskappa module, else it will throw
+an error that the fleisskappa module can't be found. If that's the case, simply drag the analyze_results.py script in the "modules" folder
+and run the program as usual.
