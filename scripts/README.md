@@ -10,9 +10,7 @@ Python scripts for creating and evaluating [LimeSurvey surveys](https://www.lime
 To start each script in this package successfully, you need a [Python3+] distribution and some other third-party tools.
 How to install these tools, will be explained in the following lines:
 
-## |---------|
-## | Windows |
-## |---------|
+## Instructions for Windows
 
 ### Python
 
