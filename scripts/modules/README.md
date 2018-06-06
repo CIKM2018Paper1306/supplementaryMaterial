@@ -12,9 +12,7 @@ Based on the caluclations by [Joseph L. Fleiss](https://en.wikipedia.org/wiki/Fl
 To install this module successfully, you need a [Python3+] distribution and an other third-party tool, called [NumPy].
 How to install these tools, will be explained in the following lines:
 
-## |---------|
-## | Windows |
-## |---------|
+## Instructions for Windows
 
 ### Python
 
@@ -67,9 +65,7 @@ py -m pip install numpy
 
 
 
-## |------|
-## |Linux |
-## |------|
+## Instructions for Linux
 
 ### Python
 
