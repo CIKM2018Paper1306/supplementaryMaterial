@@ -82,9 +82,7 @@ py -m pip install pandas
 
 
 
-## |------|
-## |Linux |
-## |------|
+## Instructions for Linux
 
 ### Python
 
