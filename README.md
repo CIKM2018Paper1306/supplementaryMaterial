@@ -1,24 +1,24 @@
 # Supplementary Material for CIKM2018 paper 1306
 
 ## Overview
-This repository contains scripts and example files for setting up a survey to assign categories to given information artifacts. This will result in an annotated question corpus that can be used as training data in research fields such as question answering or semantic search.  
-We conducted our research in the biodiversity domain, a research field where (to the best of our knowledge) no question corpus has been established yet. The original question corpus and the identified terms to label are provided in a csv file --> 'biodiv_questions.csv' 
-We also provide supplementary material to the annotation guidelines, the template files that have been generated with scripts to set up a survey and scripts to analyze the exported results.
+This repository contains scripts and example files for setting up an online survey where annotators assign textual phrases in a corpus of questions to information categories. This will result in an annotated question corpus that can be used as training data in research fields such as question answering or semantic search.  
+We conducted our research in the biodiversity domain, a research field where (to the best of our knowledge) no question corpus has been established yet. The original question corpus collected by us and the identified phrases to label are provided in the csv-file 'biodiv_questions.csv'. 
+We also provide supplementary material to the annotation guidelines outlined in the accompanying paper, template files that have been generated with scripts to set up the online survey and scripts to analyze the exported survey results.
 
 For further information, in particular the annotation guidelines, please have a look at our publication.
 
 
 ## How to reproduce the result?
  
-Go to the scripts folder and install python and the necessary modules as stated. Copy the 'biodiv-questions.csv' file to the scripts folder and run
+Go to the scripts folder and install python and the necessary modules as stated. Copy the 'biodiv_questions.csv' file to the scripts folder and run
 
 ```shell
 
-python create_survey.py -f biodiv-questions.csv
+python create_survey.py -f biodiv_questions.csv
 
 ```
-That will create a new folder 'lsg_files' that contains files which can be imported into *Limesurvey* (https://www.limesurvey.org/) as question groups. Further information can be found in the scripts folder.
-The exported result files are under surveys --> result. We established three survey with the same number of questions but different orderings in order to increase the likelihood that every question gets a rating. To retrieve the final result file with the statistics copy the three individual result files into the scripts folder and run
+That will create a new folder 'lsg_files' which contains files that can be imported into the online surveying tool *Limesurvey* (https://www.limesurvey.org/) as question groups. Further information can be found in the scripts folder.
+The exported result files are located in the subdirectory surveys/result. We generated three different surveys with the same questions but different orderings in order to increase the likelihood that every question gets a rating and to avoid any biases introduced by the question order. To retrieve the final result file with the statistics, copy the three individual result files into the scripts folder and run
 ```shell
 
 python analyze_result.py -f first.csv second.csv third.csv -c 1
