@@ -44,6 +44,3 @@ In order to use these scripts for a new domain, you would need to
 
 ## How to further use these results?
 As you can see from our 'lsg____first__second__third.csv' file, the artifacts have different *P(i)* values, which is the observed agreement over all raters. It is up to you to define a threshold at which agreement you consider a rating as a valid category assignment. Usually, a *P(i)* > 0,6 can be considered as a good agreement.
-
-## License
-ToDo
