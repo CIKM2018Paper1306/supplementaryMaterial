@@ -27,7 +27,7 @@ def commandLine():
     parser = argparse.ArgumentParser(description="Convert a CSV file to a LSG file.")
     parser.add_argument("-f", "--file", help="Input path to CSV file", required=True)
     parser.add_argument("-d", "--delete", action="store_true", help="Deletes the folder 'lsg_files' in the current directory")
-    parser.add_argument("-ct", "--category", help="Input path to the teyt file containing the categories", required=True)
+    parser.add_argument("-ct", "--category", help="Input path to the text file containing the categories and their descriptions", required=True)
     
     args = parser.parse_args()
     csv_file = args.file

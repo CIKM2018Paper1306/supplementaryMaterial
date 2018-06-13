@@ -31,7 +31,7 @@ def commandLine():
     parser = argparse.ArgumentParser(description="Evaluate the contents of a LSG-Result file.")
     parser.add_argument("-f", "--file", help="Input path to CSV-Result file", required=True, nargs="*")
     parser.add_argument("-c", "--col", type=int, help="Choose at which column the actual result data begin", required=True)
-    parser.add_argument("-ct", "--category", help="Input path to the teyt file containing the categories", required=True)
+    parser.add_argument("-ct", "--category", help="Input path to the text file containing the categories", required=True)
 
     #parse arguments
     args = parser.parse_args()
