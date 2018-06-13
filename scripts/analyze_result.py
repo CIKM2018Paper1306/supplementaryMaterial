@@ -74,7 +74,7 @@ def commandLine():
 def parseResults(surveys):
     
     #String for the first line of the evaluation CSV file
-    top = ",,P(i),sum over all n(ij),Total Responses,"
+    top = ",,P(i),Sum over all n(ij),Total Responses,"
     #String for each following line
     fileResults = "\n"
     
