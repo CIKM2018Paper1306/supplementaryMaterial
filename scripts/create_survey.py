@@ -6,24 +6,32 @@ import shutil
 import sys
 from random import randint
 
+
 #number of the current row starting at 1
 rowNumber = 1
 
 #dictionary containing another dictionary with the information of the CSV file. First key: row number; second key: title, question, noun
 rowDic = {}
 
+#list containing the categories given by the user
+categoryList = list()
 
-#Method for command line interface, arguments: -f (input file) and -d (decides whether to delete an already existing folder named 'lsg_files' or not)
+
+#Method for command line interface, arguments: -f (input file), -d (decides whether to delete an already existing folder named 'lsg_files' or not)
+#and -ct (input file with categories and descriptions)
 #return: The path to the input file of the -f option
 def commandLine():
-	
-	
+    
+    global categoryList
+    
     parser = argparse.ArgumentParser(description="Convert a CSV file to a LSG file.")
     parser.add_argument("-f", "--file", help="Input path to CSV file", required=True)
     parser.add_argument("-d", "--delete", action="store_true", help="Deletes the folder 'lsg_files' in the current directory")
-
+    parser.add_argument("-ct", "--category", help="Input path to the teyt file containing the categories", required=True)
+    
     args = parser.parse_args()
     csv_file = args.file
+    categories = args.category
     
     #creates an folder named 'lsg_files' if it doesn't exist. If it exists, an exception will be thrown (folder already exists)
     #except the -d option is set true
@@ -37,7 +45,12 @@ def commandLine():
             raise IOError("There already exists a directory 'lsg_files' in the current directory. Please remove the folder 'lsg_files' from the current directory. Use the -d option if you want to delete this folder automatically.")
 
 
-
+    with open(categories, "r") as cfile:
+        content = cfile.readlines()
+        for line in content:
+            
+            categoryList.append(line.split("|"))
+    
     return csv_file
 
 
@@ -48,12 +61,12 @@ def readCSVFile(csv_file):
     global rowNumber
     global rowDic
 
-	#reading the semicolon separated CSV file line for line. 
+    #reading the semicolon separated CSV file line for line. 
     with open(csv_file, "r") as csvfile:
         content = csv.reader(csvfile, delimiter=";")
         firstLine = True
         for row in content:
-			#the first line is ignored since it only contains the names of each column
+            #the first line is ignored since it only contains the names of each column
             if(firstLine):
                 firstLine = False
             #the content of each line is saved in a local dictionary (columnDic) which in return is saved in a global dictionary (rowDic).
@@ -106,7 +119,38 @@ def getHeaderOne(gid, sid):
 #Method containing the second part of the header of the survey format (after the 'gid' and 'sid')
 #return: The second part of the header as a String
 def getHeaderTwo():
-  
+    
+    catdescList = list()
+    for cat_desc in categoryList:
+    
+        category = cat_desc[0].strip()
+        description = cat_desc[1].strip()
+        
+        cat_desc_str = ""
+        
+        cat_desc_str = cat_desc_str + "<div class=\"panel panel-default\">\n"
+        cat_desc_str = cat_desc_str + "<div class=\"panel-heading\">\n"
+        if(len(category) > 11):
+            cat_desc_str = cat_desc_str + "<h4 class=\"panel-title\"><a data-parent=\"#accordion\" data-toggle=\"collapse\" href=\"#" +  category.lower().split(" ")[0][0:11] + "\">" + category.split(" ")[0][0:11] + " - " +  category + "</a> <img alt=\"\" src=\"\" /></h4>\n"
+        else:
+            cat_desc_str = cat_desc_str + "<h4 class=\"panel-title\"><a data-parent=\"#accordion\" data-toggle=\"collapse\" href=\"#" +  category.lower().replace(" ", "") + "\">" + category + "</a> <img alt=\"\" src=\"\" /></h4>\n"
+        
+        cat_desc_str = cat_desc_str + "</div>\n\n"
+        
+        
+        if(len(category) > 11):
+            cat_desc_str = cat_desc_str + "<div class=\"panel-collapse collapse in\" id=\"" + category.lower().split(" ")[0][0:11] + "\">\n"
+        else:
+            cat_desc_str = cat_desc_str + "<div class=\"panel-collapse collapse in\" id=\"" + category.lower().replace(" ", "") + "\">\n"
+        
+        cat_desc_str = cat_desc_str + "<div class=\"panel-body\">" + description + "</div>\n"
+        cat_desc_str = cat_desc_str + "</div>\n"
+        cat_desc_str = cat_desc_str + "</div>"
+    
+        catdescList.append(cat_desc_str)
+        
+    category_description_field = "\n\n".join(catdescList)
+        
     lsg_header = """    <description><![CDATA[<div class="panel-group" id="accordionParent">
 <div class="panel panel-default">
 <div class="panel-heading">
@@ -125,137 +169,11 @@ def getHeaderTwo():
 
 <p>You can stop the survey in between and resume later. Please click 'Resume later' in the upper right corner, provide an email address and a password to save your current state and to go on at a later time.</p>
 
-<div class="panel-group" id="accordion">
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#organism">Organism</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/org.png" /></h4>
-</div>
+<div class="panel-group" id="accordion">\n"""
 
-<div class="panel-collapse collapse in" id="organism">
-<div class="panel-body"><em>Organism </em>comprises all individual life forms, including plants, fungi, bacteria, animals and microorganisms, e.g., quercus, cyclothone, globigerina bulloides</div>
-</div>
-</div>
+    lsg_header = lsg_header + category_description_field
 
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#environment">Environment</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/env.png" /></h4>
-</div>
-
-<div class="panel-collapse collapse" id="environment">
-<div class="panel-body">All species live in certain local and global <em>Environments</em> such as habitats, biome (e.g., below 4000m, ground water, city)</div>
-</div>
-</div>
-
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#quality">Quality</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/quality.png" /></h4>
-</div>
-
-<div class="panel-collapse collapse" id="quality">
-<div class="panel-body">Organisms have certain characteristics (traits, phenotypes) that are summarized with <em>Quality and Phenotype</em>, e.g., length, growth rate, reproduction rate, traits</div>
-</div>
-</div>
-
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#material">Mat & Subst - Material and Substances</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/material.png" /></h4>
-</div>
-
-<div class="panel-collapse collapse" id="material">
-<div class="panel-body">Chemical compounds, rocks, sand and sediments can be grouped as <em>Materials and Substances</em>, e.g., sediment, rock, CO2</div>
-</div>
-</div>
-
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#method">Method</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/meth.png" /></h4>
-</div>
-
-<div class="panel-collapse collapse" id="method">
-<div class="panel-body">The term <em>Method</em> describes all operations and experiments that have to be conducted to lead to a certain result, e.g., lidar measurements, observation, remote sensing</div>
-</div>
-</div>
-
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#dataType">Data Type</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/dataType.png" /></h4>
-</div>
-
-<div class="panel-collapse collapse" id="dataType">
-<div class="panel-body">Outcomes of research methods are delivered in <em>Data Types</em>, e.g., DNA data or sequence data is the result of genome sequencing, lidar data is the result of lidar measurements (active remote sensing)</div>
-</div>
-</div>
-
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#process">Process</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/process.png" /></h4>
-</div>
-
-<div class="panel-collapse collapse" id="process">
-<div class="panel-body">Biological, chemical and physical <em>Processes</em> are re-occurring and transform materials or organisms due to chemical reactions or other influencing factors, e.g., climate change, nitrogen transformation</div>
-</div>
-</div>
-
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#anatomy">Anatomy</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/anat.png" /></h4>
-</div>
-
-<div class="panel-collapse collapse" id="anatomy">
-<div class="panel-body"><em>Anatomical Entities</em> comprise the structure of organisms, e.g., body or plant parts, organs, cells and genes, e.g., DNA, proteome, root</div>
-</div>
-</div>
-
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#location">Location</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/loc.png" /></h4>
-</div>
-
-<div class="panel-collapse collapse" id="location">
-<div class="panel-body">All kinds of geographic information is summarized with <em>Location</em>, e.g., Germany, Hainich, Atlantic Ocean</div>
-</div>
-</div>
-
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#time">Time</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/time.png" /></h4>
-</div>
-
-<div class="panel-collapse collapse" id="time">
-<div class="panel-body">Time data including geological eras are described with <em>Time</em>, e.g., current, over time, triassic</div>
-</div>
-</div>
-
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#event">Event</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/event.png" /></h4>
-</div>
-
-<div class="panel-collapse collapse" id="event">
-<div class="panel-body"><em>Events</em> are processes that appear only once at a specific time, such as environmental disasters, e.g., Deepwater Horizon oil spill, Tree of the Year 2016</div>
-</div>
-</div>
-
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#person">Person & Org - Person and Organization</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/pers.png" /></h4>
-</div>
-
-<div class="panel-collapse collapse" id="person">
-<div class="panel-body"><em>Person and Organization</em> are either projects or authors of data, e.g., Deep Sea Drilling Project, author’s or collector’s names</div>
-</div>
-</div>
-
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title"><a data-parent="#accordion" data-toggle="collapse" href="#humanInt">Human Inter - Human Intervention</a> <img alt="" src="http://gfbio-git.inf-bb.uni-jena.de/images/human.png" /></h4>
-</div>
-
-<div class="panel-collapse collapse" id="humanInt">
-<div class="panel-body"><em>Human Intervention</em> on landscape and environment, e.g., agriculture, land use, crop yield increase</div>
-</div>
-</div>
-</div>
+    lsg_header = lsg_header + """\n</div>
 </div>
 </div>
 </div>
@@ -288,7 +206,6 @@ def getHeaderTwo():
    <fieldname>modulename</fieldname>
   </fields>
   <rows>\n"""
-
 
     return lsg_header
 
@@ -342,138 +259,62 @@ def getAnswerHeader():
     return lsg_answer_header
 
 
-
 #Method containing the answer body of the survey format
 #return: The answer body as a String
 def getAnswerBody():
-
-    lsg_answer_body = """   <row>
+    
+    lsg_answer_list = list()
+    lsg_answer = """   <row>
     <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[A1]]></code>
-    <answer><![CDATA[<div><span style="color:#bdc3c7;">Anatomy</span></div>]]></answer>
-    <sortorder><![CDATA[8]]></sortorder>
+    <code><![CDATA[!CODE!]]></code>
+    <answer><![CDATA[<div><span style="color:#!COLOR!;">!CATEGORY!</span></div>]]></answer>
+    <sortorder><![CDATA[!ORDER!]]></sortorder>
     <assessment_value><![CDATA[0]]></assessment_value>
     <language><![CDATA[en]]></language>
     <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
+   </row>"""
+   
+    codeAlpha = "A"
+    codeNum = 1
+    colorList = ("bdc3c7", "8e44ad", "2ecc71", "cccc33", "7f8c8d", "33cccc", "f1c40f", "3498db", "d35400", "ffccff", "f39c12", "663300", "003399")
+    colorIndex = 0
+    sortOrder = 1
+    for cat_desc in categoryList:
+        
+        category = cat_desc[0]
+        if(len(category) > 11):
+            category = category.strip().split(" ")[0][0:11]
+        else:
+            category = category.strip().replace(" ", "")
+        
+        color = colorList[colorIndex]
+        code = codeAlpha + str(codeNum)
+        lsg_answer_list.append(lsg_answer.replace("!ORDER!", str(sortOrder)).replace("!COLOR!", color).replace("!CODE!", code).replace("!CATEGORY!", category))
+        if(codeAlpha == "Z"):
+            codeAlpha = "A"
+            codeNum = codeNum + 1
+        else:
+            codeAlpha = chr(ord(codeAlpha) + 1)
+            
+        colorIndex = colorIndex + 1
+        if(colorIndex == len(colorList)):
+            colorIndex = 0
+            
+        sortOrder = sortOrder + 1
+            
+    lsg_other = """   <row>
     <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[D1]]></code>
-    <answer><![CDATA[<div><span style="color:#8e44ad;">Data Type</span></div>]]></answer>
-    <sortorder><![CDATA[7]]></sortorder>
-    <assessment_value><![CDATA[0]]></assessment_value>
-    <language><![CDATA[en]]></language>
-    <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
-    <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[E1]]></code>
-    <answer><![CDATA[<div><span style="color:#2ecc71;">Environment</span></div>]]></answer>
-    <sortorder><![CDATA[2]]></sortorder>
-    <assessment_value><![CDATA[0]]></assessment_value>
-    <language><![CDATA[en]]></language>
-    <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
-    <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[E2]]></code>
-    <answer><![CDATA[<div><span style="color:#cccc33;">Event</span></div>]]></answer>
-    <sortorder><![CDATA[11]]></sortorder>
-    <assessment_value><![CDATA[0]]></assessment_value>
-    <language><![CDATA[en]]></language>
-    <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
-    <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[H1]]></code>
-    <answer><![CDATA[<div><span style="color:#7f8c8d;">Human Inter</span></div>]]></answer>
-    <sortorder><![CDATA[13]]></sortorder>
-    <assessment_value><![CDATA[0]]></assessment_value>
-    <language><![CDATA[en]]></language>
-    <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
-    <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[L1]]></code>
-    <answer><![CDATA[<div><span style="color:#33cccc;">Location</span></div>]]></answer>
-    <sortorder><![CDATA[9]]></sortorder>
-    <assessment_value><![CDATA[0]]></assessment_value>
-    <language><![CDATA[en]]></language>
-    <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
-    <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[M1]]></code>
-    <answer><![CDATA[<div><span style="color:#f1c40f;">Method</span></div>]]></answer>
-    <sortorder><![CDATA[6]]></sortorder>
-    <assessment_value><![CDATA[0]]></assessment_value>
-    <language><![CDATA[en]]></language>
-    <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
-    <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[MS1]]></code>
-    <answer><![CDATA[<div><span style="color:#3498db;">Mat & Subst</span></div>]]></answer>
-    <sortorder><![CDATA[4]]></sortorder>
-    <assessment_value><![CDATA[0]]></assessment_value>
-    <language><![CDATA[en]]></language>
-    <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
-    <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[O1]]></code>
-    <answer><![CDATA[<div><span style="color:#d35400;">Organism</span></div>]]></answer>
-    <sortorder><![CDATA[1]]></sortorder>
-    <assessment_value><![CDATA[0]]></assessment_value>
-    <language><![CDATA[en]]></language>
-    <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
-    <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[OT1]]></code>
+    <code><![CDATA[!CODE!]]></code>
     <answer><![CDATA[<div>other</div>]]></answer>
-    <sortorder><![CDATA[14]]></sortorder>
-    <assessment_value><![CDATA[0]]></assessment_value>
-    <language><![CDATA[en]]></language>
-    <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
-    <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[P1]]></code>
-    <answer><![CDATA[<div><span style="color:#ffccff;">Person & Org</span></div>]]></answer>
-    <sortorder><![CDATA[12]]></sortorder>
-    <assessment_value><![CDATA[0]]></assessment_value>
-    <language><![CDATA[en]]></language>
-    <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
-    <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[PQ1]]></code>
-    <answer><![CDATA[<div><span style="color:#f39c12;">Quality</span></div>]]></answer>
-    <sortorder><![CDATA[3]]></sortorder>
-    <assessment_value><![CDATA[0]]></assessment_value>
-    <language><![CDATA[en]]></language>
-    <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
-    <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[Pr1]]></code>
-    <answer><![CDATA[<div><span style="color:#663300;">Process</span></div>]]></answer>
-    <sortorder><![CDATA[5]]></sortorder>
-    <assessment_value><![CDATA[0]]></assessment_value>
-    <language><![CDATA[en]]></language>
-    <scale_id><![CDATA[0]]></scale_id>
-   </row>
-   <row>
-    <qid><![CDATA[!?!]]></qid>
-    <code><![CDATA[T1]]></code>
-    <answer><![CDATA[<div><span style="color:#003399;">Time</span></div>]]></answer>
-    <sortorder><![CDATA[10]]></sortorder>
+    <sortorder><![CDATA[!ORDER!]]></sortorder>
     <assessment_value><![CDATA[0]]></assessment_value>
     <language><![CDATA[en]]></language>
     <scale_id><![CDATA[0]]></scale_id>
    </row>\n"""
-
+    code = codeAlpha + str(codeNum)
+    lsg_answer_list.append(lsg_other.replace("!ORDER!", str(sortOrder)).replace("!CODE!", code))
+    lsg_answer_body = "\n".join(lsg_answer_list)
+   
     return lsg_answer_body
 
 
@@ -542,8 +383,8 @@ def getQuestionAttributesBody():
 
 #Method for building and writing the LSG survey file
 def buildLSGFile():
-	
-	#sets the max length of the question title
+    
+    #sets the max length of the question title
     maxlen = 18
     
     #sets the starting question ID
@@ -639,8 +480,8 @@ def buildLSGFile():
             type_s =  "    <type><![CDATA[" + str(type) + "]]></type>"
             title_s = "    <title><![CDATA[" + str(title) + "]]></title>"
             question_s = "    <question><![CDATA[" + str(question) + "]]></question>"
-			
-			#sets the String of the question body
+            
+            #sets the String of the question body
             lsg_questions = lsg_questions + ("   <row>\n" + qid_s + "\n" + "    <parent_qid><![CDATA[0]]></parent_qid>\n" +
                                              sid_s + "\n" + gid_s + "\n" + type_s + "\n" + title_s + "\n" + question_s + "\n"
                                              + "    <preg/>\n    <help/>\n" + "    <other><![CDATA[N]]></other>\n" + mandatory_s +
@@ -683,7 +524,7 @@ def buildLSGFile():
 
             #if the main question body is built
             if(loop == 0):
-				#sets the answer body
+                #sets the answer body
                 lsg_answers = lsg_answers + lsg_answer_body.replace("    <qid><![CDATA[!?!]]></qid>", qid_s)
 
             #if the 'other' question body is built
@@ -729,8 +570,8 @@ def buildLSGFile():
             #writes the complete LSG file to the lsg_files folder
             with open(lsg_name, "w") as lsg:
                 lsg.write(lsg_header + lsg_questions + lsg_subquestions + lsg_answers + lsg_question_attributes + lsg_defaults)
-			
-			#resets the question String
+            
+            #resets the question String
             lsg_questions = ""
             #resets the subquestion String
             lsg_subquestions = ""

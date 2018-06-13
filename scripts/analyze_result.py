@@ -3,6 +3,7 @@ import pandas as pd
 import fleisskappa as fk
 import os
 
+
 #number of people that participated in the surveys
 participants = 0
 
@@ -12,38 +13,55 @@ column = None
 #paramater that saves the name of the evaluation file
 resultName = ""
 
+#list containing the categories given by the user
+categoryList = list()
+
+
 #Method for the Command Line Interface, arguments: -f (input file/files), -c (input column of data begin)
+#and -ct (input file with categories and descriptions)
 #return: A dictionary containing another dictionary of each column of each file: first key - file name, second key - column name (first line)
 def commandLine():
     
     global participants
     global column
     global resultName
+    global categoryList
     
     #set CLI commands
     parser = argparse.ArgumentParser(description="Evaluate the contents of a LSG-Result file.")
     parser.add_argument("-f", "--file", help="Input path to CSV-Result file", required=True, nargs="*")
-    parser.add_argument("-c", "--col", help="Choose at which column the actual result data begin", required=True)
-    
+    parser.add_argument("-c", "--col", type=int, help="Choose at which column the actual result data begin", required=True)
+    parser.add_argument("-ct", "--category", help="Input path to the teyt file containing the categories", required=True)
+
     #parse arguments
     args = parser.parse_args()
     #get the path of each file saved in a list
     csv_files = args.file
     #set the column number at which the actual data begin
-    column = int(args.col)
+    column = args.col
+    categories = args.category
     
     #initializing survey dictionary
     surveys = {}
     #loop over each file path in the file list
-    for csv_file in csv_files:
-        
-        #set name of the evaluation file with the names of the individual file separated with "__"
-        resultName = resultName + "__" + os.path.splitext(csv_file)[-2]
-        #pandas module: fill the survey dictionary with the column dictionary of the files. The pandas module goes
-        #through the first line of the CSV file and takes each field as the keys for the column dictionary
-        surveys[csv_file] = pd.read_csv(csv_file, sep=",")
-        #increase the number of participants by the number of lines in the CSV file (excluding the first line)
-        participants = participants + len(surveys[csv_file]["id. Response ID"])
+    try:
+        for csv_file in csv_files:
+            
+            #set name of the evaluation file with the names of the individual file separated with "__"
+            resultName = resultName + "__" + os.path.splitext(csv_file)[-2]
+            #pandas module: fill the survey dictionary with the column dictionary of the files. The pandas module goes
+            #through the first line of the CSV file and takes each field as the keys for the column dictionary
+            surveys[csv_file] = pd.read_csv(csv_file, sep=",")
+            #increase the number of participants by the number of lines in the CSV file (excluding the first line)
+            participants = participants + len(surveys[csv_file]["id. Response ID"])
+    except:
+        raise KeyError("The program couldn't process the survey file '" + csv_file + "'. Please make sure to input the right survey files and that each file contain the field 'id. Response ID'.")
+    
+    with open(categories, "r") as cfile:
+        content = cfile.readlines()
+        for line in content:
+            
+            categoryList.append(line.split("|"))
     
     #return the survey dictionary
     return surveys
@@ -56,27 +74,20 @@ def commandLine():
 def parseResults(surveys):
     
     #String for the first line of the evaluation CSV file
-    top = ",,P(i),sum over all n(ij),Total Responses,Organism,Environment,Quality,Mat & Subst,Method,Data Type,Process,Anatomy,Location,Time,Event,Person & Org,Human Inter,Other,None,other category,comment"
+    top = ",,P(i),sum over all n(ij),Total Responses,"
     #String for each following line
     fileResults = "\n"
     
     #dictionary containing all categories and saving the overall score of each category
     allpoints = {}
-    allpoints["Organism"] = 0
-    allpoints["Environment"] = 0
-    allpoints["Quality"] = 0
-    allpoints["Mat & Subst"] = 0
-    allpoints["Method"] = 0
-    allpoints["Data Type"] = 0
-    allpoints["Process"] = 0
-    allpoints["Anatomy"] = 0
-    allpoints["Location"] = 0
-    allpoints["Time"] = 0
-    allpoints["Event"] = 0
-    allpoints["Person & Org"] = 0
-    allpoints["Human Inter"] = 0
+    for category in categoryList:
+        
+        allpoints[category[0].strip()] = 0
+        top = top + category[0].strip() + ","
+        
     allpoints["Other"] = 0
     allpoints["None"] = 0
+    top = top + "Other,None,other category,comment"
     
     globalTitle = ""
     
@@ -101,19 +112,10 @@ def parseResults(surveys):
         #dictionary containing all categories and saving the local score of each category
         #for each question and noun
         points = {}
-        points["Organism"] = 0
-        points["Environment"] = 0
-        points["Quality"] = 0
-        points["Mat & Subst"] = 0
-        points["Method"] = 0
-        points["Data Type"] = 0
-        points["Process"] = 0
-        points["Anatomy"] = 0
-        points["Location"] = 0
-        points["Time"] = 0
-        points["Event"] = 0
-        points["Person & Org"] = 0
-        points["Human Inter"] = 0
+        for category in categoryList:
+            
+            points[category[0].strip()] = 0
+            
         points["Other"] = 0
         points["None"] = 0
         
@@ -156,25 +158,33 @@ def parseResults(surveys):
                 #loop over each survey of the survey dictionary
                 for surveyKey in surveys:
                     
-                    #loop over each answer to the question (received by the first input survey) of each survey
-                    for answer in surveys[surveyKey][question]:
+                    try:
+                        #loop over each answer to the question (received by the first input survey) of each survey
+                        for answer in surveys[surveyKey][question]:
                         
-                        answer = str(answer)
-                        #initialize the category String
-                        category = ""
-                        #if the answer is 'other', set the category String to 'Other'
-                        if(answer.startswith("<div>other")):
-                            category = "Other"
-                        #if the answer is empty (no answer was given/NaN), set the category String to 'None'
-                        elif(answer == "nan"):
-                            category = "None"
-                        #Else, set the category String to the answer given by the survey
-                        else:
-                            category = answer.split("</span>")[0].split(">")[-1]
-                        
-                        #increase the local and overall score of the given category by 1
-                        points[category] = points[category] + 1
-                        allpoints[category] = allpoints[category] + 1
+                            answer = str(answer)
+                            #initialize the category String
+                            category = ""
+                            #if the answer is 'other', set the category String to 'Other'
+                            if(answer.startswith("<div>other")):
+                                category = "Other"
+                            #if the answer is empty (no answer was given/NaN), set the category String to 'None'
+                            elif(answer == "nan"):
+                                category = "None"
+                            #else, set the category String to the answer given by the survey
+                            else:
+                                category = answer.split("</span>")[0].split(">")[-1]
+                            
+                            try:
+                                #increase the local and overall score of the given category by 1
+                                points[category] = points[category] + 1
+                                allpoints[category] = allpoints[category] + 1
+                            except:
+                                raise IndexError("The program couldn't evaluate the category '" + category + "'. Please make sure that this category is contained in the 'categories' file.")
+                    except IndexError as ie:
+                        raise IndexError(ie)
+                    except:
+                        raise KeyError("The program couldn't find the question and term '" + question + "' in the survey file '" + surveyKey + "'. Please make sure that all files contain identical questions and terms.")
                     
                     
                     
@@ -287,8 +297,13 @@ def parseResults(surveys):
 #Main method for parsing the CSV survey file/files and evaluating its/their results
 def startEvaluation():
     
-    surveys = commandLine()
-    parseResults(surveys)
+    try:
+        surveys = commandLine()
+        parseResults(surveys)
+    except IndexError as ie:
+        print(ie)
+    except KeyError as ke:
+        print(ke)
     
     
     

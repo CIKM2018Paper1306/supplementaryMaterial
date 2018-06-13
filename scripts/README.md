@@ -156,18 +156,20 @@ py -m pip install pandas
 ## create_survey.py:
 
 create_survey.py is a simple Command Line Interface (CLI) tool to read and extract data from a semicolon-separated CSV file and to
-write it into the [LimeSurvey-XML-format]. The script has two options as input, '-f' and '-d'. The '-f' option takes the path
+write it into the [LimeSurvey-XML-format]. The script has three options as input, '-f', '-d' and '-ct'. The '-f' option takes the path
 to the CSV file as input. A folder named 'lsg_files' - in which all LimeSurvey-XML files are saved - is automatically created in
 the same directory as the CSV file during the process. The '-d' option deletes this 'lsg_files' folder if it already exist. If a
 folder named 'lsg_files' already exists but the '-d' option isn't set, the program will print an error message to remove this folder
-from this directory or set the '-d' option and abort.
+from this directory or set the '-d' option and abort. The '-ct' option takes the path to a simple text file containing the categories
+and their descriptions. Each line has one category and its description separated by a vertical line '|'. For more information see
+the 'Example categories files' section.
 
 ### Example usage:
 
 ```shell
 #Go to the directoy where the create_survey.py script is saved and type:
 
-python create_survey.py -f biodiv_questions.csv -d
+python create_survey.py -f biodiv_questions.csv -ct creation_categories.txt -d
 ```
 
 The [LimeSurvey-XML] file can have a maximum of 20 questions. If a CSV file has more than 20 questions it will separated in two, three,
@@ -179,6 +181,7 @@ The CSV file should be semicolon-separated and have the following format:
 
 - 1st column: Title
     -> each question has to have an unique title
+    -> each title longer than 18 characters will be trimmed to 18 characters
     
 - 2nd column: Question/statement
 
@@ -192,7 +195,7 @@ The CSV file should be semicolon-separated and have the following format:
 ## analyze_results.py:
 
 analyze_results.py is a simple CLI tool to read and extract data from a [LimeSurvey-Result]-CSV file and to write and evaluate its
-results into a new CSV file, called 'lsg__/survey_names/.csv'. The script has two options as input, '-f' and '-c'. The '-f' option
+results into a new CSV file, called 'lsg__/survey_names/.csv'. The script has three options as input, '-f', '-c' and '-ct'. The '-f' option
 can take the paths of multiple [LimeSurvey-Result]-CSV files and combine the results into a single CSV file. However, each of these
 files have to have the same questions and nouns, i.e. have to be identical except for their question order. Most likely won't most
 participants answer each question and noun (especially in particulary long surveys). Therefore, it can be useful to let each participant
@@ -200,15 +203,61 @@ run through one survey multiple times - each time with a different question orde
 at least once. The '-c' option let's you choose at which column in the [LimeSurvey-Result]-CSV file the actually data starts, so at which
 column the first question (and noun) and answer is. Only the start column of the first input [LimeSurvey-Result]-CSV file is needed since
 the data of all following [LimeSurvey-Result]-CSV files is extracted by using the question titles and nouns of the first
-[LimeSurvey-Result]-CSV file.
+[LimeSurvey-Result]-CSV file. The '-ct' option takes the path to a simple text file containing the categories. The categories should be
+identical to the categories used in the survey/surveys or else the program will throw an error if a category was chosen as answer but
+wasn't written in the 'categories' file. The descriptions will be ignored. For more information see the 'Example categories file' section.
+
 
 ### Example usage:
 
 ```shell
 #Go to the directoy where the analyze_results.py script is saved and type:
 
-python analyze_results.py -f first.csv second.csv third.csv -c 2
+python analyze_results.py -f first.csv second.csv third.csv -c 2 -ct evaluation_categories.txt
 ```
+
+
+
+
+# Example 'categories' files
+
+creation_categories.txt
+|-----------------------------|
+|category1|description1       |
+|category2|description2       |
+|category3|description3       |
+|category4|description4       |
+|category5|description5       |
+|category6|description6       |
+|category7|description7       |
+|category8|description8       |
+|category9|description9       |
+|category10|description10     |
+|                             |
+|                             |
+|                             |
+|                             |
+|-----------------------------|
+
+or for the analyze_results.py specificially
+
+evaluation_categories.txt
+|-----------------------------|
+|category1                    |
+|category2                    |
+|category3                    |
+|category4                    |
+|category5                    |
+|category6                    |
+|category7                    |
+|category8                    |
+|category9                    |
+|category10                   |
+|                             |
+|                             |
+|                             |
+|                             |
+|-----------------------------|
 
 
 
