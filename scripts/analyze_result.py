@@ -87,7 +87,7 @@ def parseResults(surveys):
         
     allpoints["Other"] = 0
     allpoints["None"] = 0
-    top = top + "Other,None,other category,comment"
+    top = top + "Other,None,Other Category,Comment"
     
     globalTitle = ""
     
